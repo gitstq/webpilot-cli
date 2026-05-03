@@ -1,0 +1,58 @@
+# Basic WebPilot Workflow Example
+# This workflow navigates to a page, extracts content, and takes a screenshot.
+
+name: basic_workflow
+description: A simple workflow that browses a webpage and extracts its content
+
+# Global variables
+vars:
+  base_url: "https://example.com"
+  output_dir: "output"
+
+# Workflow configuration
+stop_on_error: true
+
+steps:
+  # Step 1: Navigate to the target page
+  - name: "Navigate to Example"
+    type: navigate
+    url: "${base_url}"
+    save: page_info
+
+  # Step 2: Wait for page to load
+  - name: "Wait for page"
+    type: wait
+    seconds: 1
+
+  # Step 3: Extract page content
+  - name: "Extract content"
+    type: extract
+    fields:
+      - title
+      - description
+      - text
+      - links
+    save: extracted_data
+
+  # Step 4: Take a screenshot
+  - name: "Take screenshot"
+    type: screenshot
+    output: "${output_dir}/screenshot.html"
+    format: html
+    save: screenshot_result
+
+  # Step 5: Conditional step based on page title
+  - name: "Check page title"
+    type: condition
+    variable: page_info
+    operator: exists
+    then:
+      - name: "Title found"
+        type: set_variable
+        value: "Page title was successfully extracted"
+        save: status_message
+    else:
+      - name: "No title"
+        type: set_variable
+        value: "No page title found"
+        save: status_message

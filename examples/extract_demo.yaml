@@ -1,0 +1,71 @@
+# Content Extraction Demo Workflow
+# Demonstrates advanced content extraction features.
+
+name: extract_demo
+description: Extract structured content from a webpage with filtering
+
+vars:
+  target_url: "https://example.com"
+
+stop_on_error: false
+
+steps:
+  # Navigate to the target
+  - name: "Load page"
+    type: navigate
+    url: "${target_url}"
+
+  # Wait a moment
+  - name: "Pause"
+    type: wait
+    seconds: 2
+
+  # Extract only title and description
+  - name: "Get metadata"
+    type: extract
+    fields:
+      - title
+      - description
+    save: metadata
+
+  # Extract links only
+  - name: "Get all links"
+    type: extract
+    fields:
+      - links
+    save: all_links
+
+  # Extract images only
+  - name: "Get all images"
+    type: extract
+    fields:
+      - images
+    save: all_images
+
+  # Extract everything
+  - name: "Get full content"
+    type: extract
+    save: full_content
+
+  # Take ASCII screenshot
+  - name: "ASCII screenshot"
+    type: screenshot
+    output: "output/ascii_screenshot.txt"
+    format: ascii
+
+  # Take HTML screenshot
+  - name: "HTML screenshot"
+    type: screenshot
+    output: "output/html_screenshot.html"
+    format: html
+
+  # Loop example: display info multiple times
+  - name: "Info loop"
+    type: loop
+    count: 3
+    index_var: iteration
+    steps:
+      - name: "Show iteration"
+        type: set_variable
+        value: "Processing iteration ${iteration}"
+        save: loop_status
